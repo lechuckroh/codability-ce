@@ -1,5 +1,10 @@
+'use strict';
+
 const Koa = require('koa');
+const Router = require('koa-router');
+
 const app = new Koa();
+const router = new Router();
 
 const port = 3000;
 
@@ -12,10 +17,17 @@ app.use(async (ctx, next) => {
     console.log(`${request.ip} - ${ctx.method} ${ctx.url} - ${elapsed}ms`);
 });
 
-// 응답
-app.use(ctx => {
-    ctx.body = 'Hello Koa';
-})
+// 라우터
+router
+    .get('/', function (ctx, next) {
+        ctx.body = 'Hello Koa';
+    })
+    .get('/test', function (ctx, next) {
+        ctx.body = 'Test Koa';
+    });
+
+app.use(router.routes());
+app.use(router.allowedMethods());
 
 // 서버 시작
 app.listen(port);

@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/lechuckroh/code-assessment#readme",
   "dependencies": {
-    "koa": "^2.2.0"
+    "koa": "^2.2.0",
+    "koa-json-body": "^5.3.0",
+    "koa-router": "^7.0.1"
   }
 }

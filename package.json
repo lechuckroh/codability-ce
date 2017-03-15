@@ -1,0 +1,23 @@
+{
+  "name": "code-assessment",
+  "version": "1.0.0",
+  "description": "Online code assessment",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lechuckroh/code-assessment.git"
+  },
+  "author": "Lechuck Roh",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lechuckroh/code-assessment/issues"
+  },
+  "homepage": "https://github.com/lechuckroh/code-assessment#readme",
+  "dependencies": {
+    "koa": "^2.2.0"
+  }
+}

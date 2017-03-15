@@ -1,2 +1,2 @@
-# code-assessment
-Online code assessment
+# Requirements
+* node v7.6+

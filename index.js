@@ -3,7 +3,7 @@ const app = new Koa();
 
 const port = 3000;
 
-// Access logger middleware
+// 접속 로그 미들웨어
 app.use(async (ctx, next) => {
     const start = new Date();
     await next();
@@ -12,12 +12,11 @@ app.use(async (ctx, next) => {
     console.log(`${request.ip} - ${ctx.method} ${ctx.url} - ${elapsed}ms`);
 });
 
-// response
+// 응답
 app.use(ctx => {
     ctx.body = 'Hello Koa';
 })
 
-// start server
+// 서버 시작
 app.listen(port);
-console.log(`Listening port : ${port}`);
-console.log('Server started.');
+console.log(`서버 시작. 포트: ${port}`);

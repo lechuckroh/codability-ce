@@ -3,10 +3,11 @@
 const fs = require('fs');
 const Koa = require('koa');
 const Router = require('koa-router');
-
+const winston = require('winston');
 
 // Logger 설정
 function initLogger(app) {
+    // Access Logs
     if (process.env.NODE_ENV === 'production') {
         const logDir = __dirname + '/logs';
         const accessLogFilename = 'access.log';
@@ -22,6 +23,9 @@ function initLogger(app) {
     else {
         app.use(require('koa-logger')());
     }
+
+    // winston
+    winston.level = process.env.LOG_LEVEL || 'debug';
 }
 
 // 라우트 설정
@@ -43,7 +47,7 @@ function registerRoutes(app) {
 function startServer(app) {
     const port = 3000;
     app.listen(port);
-    console.log(`서버 시작. 포트: ${port}`);
+    winston.log('info', '서버 시작', {port: port});
 }
 
 

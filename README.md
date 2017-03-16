@@ -6,4 +6,4 @@
 * [Koa](https://github.com/koajs/koa)
 * [koa-router](https://github.com/alexmingoia/koa-router)
 * [koa-json-body](https://github.com/venables/koa-json-body)
-* [concurrency-logger](https://github.com/PabloSichert/concurrency-logger)
+* [winston](https://github.com/winstonjs/winston)

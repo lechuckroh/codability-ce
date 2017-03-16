@@ -1,10 +1,11 @@
 'use strict';
 
 const fs = require('fs');
+const rfs = require('rotating-file-stream');
 const Koa = require('koa');
 const Router = require('koa-router');
 const winston = require('winston');
-
+winston.transports.DailyRotateFile = require('winston-daily-rotate-file');
 
 function isProduction() {
     return process.env.NODE_ENV === 'production';
@@ -20,16 +21,16 @@ function initLogger(app) {
 
     // create log directory
     if (prodMode) {
-        if (!fs.existsSync(logDir)) {
-            fs.mkdirSync(logDir);
-        }
+        fs.existsSync(logDir) || fs.mkdirSync(logDir);
     }
 
     // Access Logs
     if (prodMode) {
         const morgan = require('koa-morgan');
-        const path = `${logDir}/${accessLogFilename}`;
-        const ws = fs.createWriteStream(path, {flags: 'a'});
+        const ws = rfs(accessLogFilename, {
+            interval: '1d',
+            path: logDir
+        });
         app.use(morgan('combined', {stream: ws}))
     }
     else {
@@ -40,7 +41,11 @@ function initLogger(app) {
     winston.level = process.env.LOG_LEVEL || 'debug';
     if (prodMode) {
         const path = `${logDir}/${logFilename}`;
-        winston.add(winston.transports.File, {filename: path});
+        const pattern = '.yyyy-MM-dd';
+        winston.add(winston.transports.DailyRotateFile, {
+            filename: path,
+            datePattern: pattern
+        });
         winston.remove(winston.transports.Console);
     }
 }

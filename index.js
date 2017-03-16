@@ -5,16 +5,28 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const winston = require('winston');
 
+
+function isProduction() {
+    return process.env.NODE_ENV === 'production';
+}
+
 // Logger 설정
 function initLogger(app) {
-    // Access Logs
-    if (process.env.NODE_ENV === 'production') {
-        const logDir = __dirname + '/logs';
-        const accessLogFilename = 'access.log';
+    const logDir = __dirname + '/logs';
+    const accessLogFilename = 'access.log';
+    const logFilename = 'app.log';
+
+    const prodMode = isProduction();
+
+    // create log directory
+    if (prodMode) {
         if (!fs.existsSync(logDir)) {
             fs.mkdirSync(logDir);
         }
+    }
 
+    // Access Logs
+    if (prodMode) {
         const morgan = require('koa-morgan');
         const path = `${logDir}/${accessLogFilename}`;
         const ws = fs.createWriteStream(path, {flags: 'a'});
@@ -26,6 +38,11 @@ function initLogger(app) {
 
     // winston
     winston.level = process.env.LOG_LEVEL || 'debug';
+    if (prodMode) {
+        const path = `${logDir}/${logFilename}`;
+        winston.add(winston.transports.File, {filename: path});
+        winston.remove(winston.transports.Console);
+    }
 }
 
 // 라우트 설정
@@ -47,7 +64,7 @@ function registerRoutes(app) {
 function startServer(app) {
     const port = 3000;
     app.listen(port);
-    winston.log('info', '서버 시작', {port: port});
+    winston.info('서버 시작', {port: port});
 }
 
 

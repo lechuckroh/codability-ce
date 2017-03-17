@@ -4,6 +4,6 @@
 
 # 참고 링크
 * [Koa](https://github.com/koajs/koa)
+* [koa-bodyparser](https://github.com/koajs/bodyparser)
 * [koa-router](https://github.com/alexmingoia/koa-router)
-* [koa-json-body](https://github.com/venables/koa-json-body)
 * [winston](https://github.com/winstonjs/winston)

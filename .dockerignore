@@ -1,6 +1,7 @@
 /.idea
 .gitignore
 .dockerignore
+rest-test
 
 npm-debug.log*
 yarn-debug.log*

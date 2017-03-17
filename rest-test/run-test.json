@@ -1,0 +1,4 @@
+{
+  "language": "java",
+  "code": "public class Ex1 {\n  public static int twice(int v) {\n    return 0;\n  }\n}"
+}

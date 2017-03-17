@@ -3,7 +3,8 @@
 const fs = require('fs');
 const rfs = require('rotating-file-stream');
 const Koa = require('koa');
-const Router = require('koa-router');
+const bodyParser = require('koa-bodyparser');
+const routes = require('./app/routes');
 const winston = require('winston');
 winston.transports.DailyRotateFile = require('winston-daily-rotate-file');
 
@@ -52,15 +53,9 @@ function initLogger(app) {
 
 // 라우트 설정
 function registerRoutes(app) {
-    const router = new Router();
-    router
-        .get('/', function (ctx, next) {
-            ctx.body = 'Hello Koa';
-        })
-        .get('/test', function (ctx, next) {
-            ctx.body = 'Test Koa';
-        });
+    app.use(bodyParser());
 
+    const router = routes.router;
     app.use(router.routes());
     app.use(router.allowedMethods());
 }

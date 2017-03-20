@@ -51,6 +51,18 @@ function initLogger(app) {
     }
 }
 
+function initErrorLogger(app) {
+    if (isProduction()) {
+        app.on('error', (err, ctx) => {
+            winston.error('server error', err, ctx);
+        });
+    } else {
+        app.on('error', (err, ctx) => {
+            console.error('server error', err, ctx);
+        });
+    }
+}
+
 // 라우트 설정
 function registerRoutes(app) {
     app.use(bodyParser());
@@ -70,5 +82,6 @@ function startServer(app) {
 
 const app = new Koa();
 initLogger(app);
+initErrorLogger(app);
 registerRoutes(app);
 startServer(app);

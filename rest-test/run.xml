@@ -4,7 +4,7 @@
   </option>
   <option name="httpMethod" value="POST" />
   <option name="urlBase" value="http://localhost:3000" />
-  <option name="urlPath" value="/run/test" />
+  <option name="urlPath" value="/tasks/1234/run" />
   <option name="headers">
     <list>
       <KeyValuePair>
@@ -22,17 +22,12 @@
     </list>
   </option>
   <option name="parameters">
-    <list>
-      <KeyValuePair>
-        <option name="key" value="language" />
-        <option name="value" value="java" />
-      </KeyValuePair>
-    </list>
+    <list />
   </option>
   <option name="parametersEnabled" value="true" />
   <option name="haveTextToSend" value="false" />
   <option name="haveFileToSend" value="true" />
   <option name="isFileUpload" value="false" />
-  <option name="textToSend" value="{&quot;aaa&quot;:true}" />
-  <option name="filesToSend" value="/Users/lechuck/works/code-assessment/rest-test/run-test.json" />
+  <option name="textToSend" value="" />
+  <option name="filesToSend" value="/Users/lechuck/works/code-assessment/rest-test/run.json" />
 </RestClientRequest>

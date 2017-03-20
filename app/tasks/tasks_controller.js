@@ -3,9 +3,8 @@
 exports.status = async function(ctx, next) {
     const taskId = ctx.params.taskId;
 
-    console.log(taskId);
-
     // TODO
+    ctx.status = 404;
     ctx.body = 'status is not implemented';
 
     await next();
@@ -44,7 +43,7 @@ exports.run = async function (ctx, next) {
     console.log(taskId, idx, lang, code);
 
     // TODO
-    ctx.body = 'run test is not implemented';
+    ctx.body = 'tasks test is not implemented';
 
     await next();
 };

@@ -4,7 +4,7 @@
   "description": "Online code assessment",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "./node_modules/.bin/mocha --harmony --reporter spec --require should **/*/*_test.js",
     "start": "node app"
   },
   "repository": {
@@ -26,5 +26,10 @@
     "rotating-file-stream": "^1.1.9",
     "winston": "^2.3.1",
     "winston-daily-rotate-file": "^1.4.6"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "should": "^11.2.1",
+    "supertest": "*"
   }
 }

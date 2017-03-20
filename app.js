@@ -75,13 +75,17 @@ function registerRoutes(app) {
 // 서버 시작
 function startServer(app) {
     const port = 3000;
-    app.listen(port);
     winston.info('서버 시작', {port: port});
+    return app.listen(port);
 }
 
+function start() {
+    const app = new Koa();
+    initLogger(app);
+    initErrorLogger(app);
+    registerRoutes(app);
+    return startServer(app);
+}
 
-const app = new Koa();
-initLogger(app);
-initErrorLogger(app);
-registerRoutes(app);
-startServer(app);
+exports.start = start;
+

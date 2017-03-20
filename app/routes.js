@@ -1,7 +1,7 @@
 'use strict';
 
 const Router = require('koa-router');
-const tasksController = require('./run/tasks_controller');
+const tasksController = require('./tasks/tasks_controller');
 const router = new Router();
 const packageJson = require('../package.json');
 

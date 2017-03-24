@@ -5,6 +5,7 @@ const rfs = require('rotating-file-stream');
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const routes = require('./app/routes');
+const mongo = require('koa-mongo');
 const winston = require('winston');
 winston.transports.DailyRotateFile = require('winston-daily-rotate-file');
 
@@ -12,7 +13,18 @@ function isProduction() {
     return process.env.NODE_ENV === 'production';
 }
 
-// Logger 설정
+function loadConfig() {
+    const env = process.env.NODE_ENV || 'development';
+    const configFilename = __dirname + `/config/config-${env}.json`;
+    try {
+        const json = fs.readFileSync(configFilename);
+        return JSON.parse(json);
+    } catch (e) {
+        winston.error(`Failed to load ${configFilename}`);
+        return null;
+    }
+}
+
 function initLogger(app) {
     const logDir = __dirname + '/logs';
     const accessLogFilename = 'access.log';
@@ -52,18 +64,11 @@ function initLogger(app) {
 }
 
 function initErrorLogger(app) {
-    if (isProduction()) {
-        app.on('error', (err, ctx) => {
-            winston.error('server error', err, ctx);
-        });
-    } else {
-        app.on('error', (err, ctx) => {
-            console.error('server error', err, ctx);
-        });
-    }
+    app.on('error', (err, ctx) => {
+        winston.error('server error', err, ctx);
+    });
 }
 
-// 라우트 설정
 function registerRoutes(app) {
     app.use(bodyParser());
 
@@ -72,7 +77,11 @@ function registerRoutes(app) {
     app.use(router.allowedMethods());
 }
 
-// 서버 시작
+function setupMongo(app, cfg) {
+    console.log(cfg);
+    app.use(mongo(cfg));
+}
+
 function startServer(app) {
     const port = 3000;
     winston.info('서버 시작', {port: port});
@@ -80,12 +89,21 @@ function startServer(app) {
 }
 
 function start() {
+    const config = loadConfig();
+    if (!config) {
+        return;
+    }
+
     const app = new Koa();
     initLogger(app);
     initErrorLogger(app);
+    setupMongo(app, config.mongo || {});
     registerRoutes(app);
+
     return startServer(app);
 }
+
+start();
 
 exports.start = start;
 

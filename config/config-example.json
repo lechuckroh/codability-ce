@@ -1,0 +1,7 @@
+{
+  "mongo": {
+    "uri": "mongodb://admin:123456@localhost:27017/codability",
+    "min": 1,
+    "max": 100
+  }
+}

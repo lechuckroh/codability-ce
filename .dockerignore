@@ -2,6 +2,7 @@
 .gitignore
 .dockerignore
 rest-test
+/config
 
 npm-debug.log*
 yarn-debug.log*

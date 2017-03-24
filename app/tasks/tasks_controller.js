@@ -12,12 +12,15 @@ exports.status = async function(ctx, next) {
 
 exports.query = async function(ctx, next) {
     const taskId = ctx.params.taskId;
-    const idx = ctx.params.idx;
+    const questionIdx = ctx.params.idx;
 
-    console.log(taskId, idx);
+    console.log(taskId, questionIdx);
+
+    const db = ctx.mongo.db('codability');
+    ctx.body = await db.collection('tasks').find().toArray();
 
     // TODO
-    ctx.body = 'query is not implemented';
+    //ctx.body = 'query is not implemented';
 
     await next();
 };

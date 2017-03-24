@@ -10,9 +10,9 @@ router.get('/', ctx => {
 });
 
 router.get('/tasks/:taskId/status', tasksController.status);
-router.get('/tasks/:taskId/:idx', tasksController.query);
+router.get('/tasks/:taskId/:questionIdx', tasksController.query);
 router.post('/tasks/:taskId/start', tasksController.start);
-router.post('/tasks/:taskId/:idx', tasksController.run);
+router.post('/tasks/:taskId/:questionIdx', tasksController.run);
 router.post('/tasks/:taskId/submit', tasksController.submit);
 
 

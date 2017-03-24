@@ -36,6 +36,7 @@ jspm_packages
 .node_repl_history
 
 .idea/workspace.xml
+.idea/markdown-*
 /config/config-*.json
 !/config/config-example.json
 yarn.lock

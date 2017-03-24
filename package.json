@@ -1,7 +1,7 @@
 {
-  "name": "code-assessment",
+  "name": "codability-ce",
   "version": "0.1.0",
-  "description": "Online code assessment",
+  "description": "Codability Community Edition",
   "main": "app.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --harmony --reporter spec --require should **/*/*_test.js",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lechuckroh/code-assessment.git"
+    "url": "git+https://github.com/lechuckroh/codability-ce.git"
   },
   "author": "Lechuck Roh",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/lechuckroh/code-assessment/issues"
+    "url": "https://github.com/lechuckroh/codability-ce/issues"
   },
-  "homepage": "https://github.com/lechuckroh/code-assessment#readme",
+  "homepage": "https://github.com/lechuckroh/codability-ce#readme",
   "dependencies": {
     "koa": "^2.2.0",
     "koa-bodyparser": "^4.2.0",

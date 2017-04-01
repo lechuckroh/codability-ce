@@ -103,7 +103,7 @@ function start() {
     return startServer(app);
 }
 
-start();
+const server = start();
 
-exports.start = start;
+exports.server = server;
 

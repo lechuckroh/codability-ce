@@ -1,5 +1,7 @@
+"use strict";
+
 const app = require('../../app');
-const request = require('supertest').agent(app.start());
+const request = require('supertest').agent(app.server);
 
 describe('tasks', function() {
     describe('when GET /tasks/-1/status', function() {

@@ -4,7 +4,8 @@
   "description": "Codability Community Edition",
   "main": "app.js",
   "scripts": {
-    "test": "NODE_ENV=test ./node_modules/.bin/mocha --harmony --reporter spec --require should **/*/*_test.js",
+    "test": "NODE_ENV=test mocha --harmony --reporter spec --require should --recursive -R min test/",
+    "testmon": "NODE_ENV=test nodemon --exec 'mocha --harmony --reporter spec --require should --recursive -R min test/'",
     "start": "node app"
   },
   "repository": {
@@ -21,17 +22,19 @@
     "koa": "^2.2.0",
     "koa-bodyparser": "^4.2.0",
     "koa-logger": "^2.0.1",
-    "koa-mongo": "^0.7.0",
+    "koa-mongoose": "^2.0.0",
     "koa-morgan": "^1.0.1",
     "koa-router": "^7.0.1",
+    "mongodb": "^2.2.25",
+    "mongoose": "^4.9.2",
     "rotating-file-stream": "^1.2.1",
     "winston": "^2.3.1",
-    "winston-daily-rotate-file": "^1.4.6",
-    "mongodb": "latest"
+    "winston-daily-rotate-file": "^1.4.6"
   },
   "devDependencies": {
     "database-cleaner": "^1.2.0",
     "mocha": "*",
+    "nodemon": "^1.11.0",
     "should": "^11.2.1",
     "supertest": "*"
   }

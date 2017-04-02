@@ -5,9 +5,11 @@ const rfs = require('rotating-file-stream');
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const routes = require('./app/routes');
-const mongo = require('koa-mongo');
+const mongoose = require('koa-mongoose');
+mongoose.Promise = global.Promise;
 const winston = require('winston');
 winston.transports.DailyRotateFile = require('winston-daily-rotate-file');
+
 
 function isProduction() {
     return process.env.NODE_ENV === 'production';
@@ -87,12 +89,12 @@ function registerRoutes(app) {
 }
 
 function setupMongo(app, cfg) {
-    app.use(mongo(cfg));
+    app.use(mongoose(cfg));
 }
 
 function startServer(app) {
     const port = 3000;
-    winston.info('서버 시작', {port: port});
+    winston.info('Server started.', {port: port});
     return app.listen(port);
 }
 
@@ -104,7 +106,7 @@ function start(config) {
     const app = new Koa();
     initLogger(app);
     initErrorLogger(app);
-    setupMongo(app, config.mongo || {});
+    setupMongo(app, config['mongo'] || {});
     registerRoutes(app);
 
     return startServer(app);

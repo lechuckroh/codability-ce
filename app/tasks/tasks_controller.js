@@ -1,26 +1,30 @@
 'use strict';
 
+const winston = require('winston');
+const Task = require('./task');
+
 exports.status = async function(ctx, next) {
     const taskId = ctx.params.taskId;
+    const task = await Task.findOne({id: taskId});
 
-    // TODO
-    ctx.status = 404;
-    ctx.body = 'status is not implemented';
-
-    await next();
+    if (task) {
+        ctx.status = 200;
+        ctx.body = task;
+    } else {
+        ctx.status = 404;
+        ctx.body = `No such task with taskId=${taskId}`;
+    }
 };
 
 exports.query = async function(ctx, next) {
     const taskId = ctx.params.taskId;
     const questionIdx = ctx.params.idx;
 
-    console.log(taskId, questionIdx);
-
-    const db = ctx.mongo.db('codability');
-    ctx.body = await db.collection('tasks').find().toArray();
+    winston.info(taskId, questionIdx);
 
     // TODO
-    //ctx.body = 'query is not implemented';
+    ctx.status = 501;
+    ctx.body = 'query is not implemented';
 
     await next();
 };
@@ -28,9 +32,10 @@ exports.query = async function(ctx, next) {
 exports.start = async function(ctx, next) {
     const taskId = ctx.params.taskId;
 
-    console.log(taskId);
+    winston.info(taskId);
 
     // TODO
+    ctx.status = 501;
     ctx.body = 'start is not implemented';
 
     await next();
@@ -43,9 +48,10 @@ exports.run = async function (ctx, next) {
     const taskId = ctx.params.taskId;
     const idx = ctx.params.idx;
 
-    console.log(taskId, idx, lang, code);
+    winston.info(taskId, idx, lang, code);
 
     // TODO
+    ctx.status = 501;
     ctx.body = 'tasks test is not implemented';
 
     await next();
@@ -56,9 +62,10 @@ exports.submit = async function (ctx, next) {
     const codes = body.codes;
     const taskId = ctx.params.id;
 
-    console.log(taskId, codes);
+    winston.info(taskId, codes);
 
     // TODO
+    ctx.status = 501;
     ctx.body = 'submit request is not implemented';
 
     await next();

@@ -1,7 +1,15 @@
 {
   "mongo": {
-    "uri": "mongodb://admin:123456@localhost:27017/codability",
-    "min": 1,
-    "max": 100
+    "user": "",
+    "pass": "",
+    "host": "localhost",
+    "port": 27017,
+    "database": "codability-test",
+    "db": {
+      "native_parser": true
+    },
+    "server": {
+      "poolSize": 5
+    }
   }
 }

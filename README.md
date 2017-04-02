@@ -7,5 +7,6 @@
 * [koa-bodyparser](https://github.com/koajs/bodyparser)
 * [koa-router](https://github.com/alexmingoia/koa-router)
 * [koa-mongo](https://github.com/nswbmw/koa-mongo)
+* [koa-mongoose](https://github.com/Jackong/koa-mongoose)
 * [winston](https://github.com/winstonjs/winston)
 * [database-cleaner](https://github.com/emerleite/node-database-cleaner)

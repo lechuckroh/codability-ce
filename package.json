@@ -26,9 +26,11 @@
     "koa-router": "^7.0.1",
     "rotating-file-stream": "^1.2.1",
     "winston": "^2.3.1",
-    "winston-daily-rotate-file": "^1.4.6"
+    "winston-daily-rotate-file": "^1.4.6",
+    "mongodb": "latest"
   },
   "devDependencies": {
+    "database-cleaner": "^1.2.0",
     "mocha": "*",
     "should": "^11.2.1",
     "supertest": "*"

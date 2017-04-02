@@ -14,8 +14,17 @@ function isProduction() {
 }
 
 function loadConfig() {
-    const env = process.env.NODE_ENV || 'development';
-    const configFilename = __dirname + `/config/config-${env}.json`;
+    function getConfigFilename() {
+        const envFilename = process.env.CONFIG_FILE;
+        if (envFilename) {
+            return envFilename;
+        } else {
+            const env = process.env.NODE_ENV || 'development';
+            return __dirname + `/config/config-${env}.json`;
+        }
+    }
+
+    const configFilename = getConfigFilename();
     try {
         const json = fs.readFileSync(configFilename);
         return JSON.parse(json);
@@ -78,7 +87,6 @@ function registerRoutes(app) {
 }
 
 function setupMongo(app, cfg) {
-    console.log(cfg);
     app.use(mongo(cfg));
 }
 
@@ -88,8 +96,7 @@ function startServer(app) {
     return app.listen(port);
 }
 
-function start() {
-    const config = loadConfig();
+function start(config) {
     if (!config) {
         return;
     }
@@ -103,7 +110,9 @@ function start() {
     return startServer(app);
 }
 
-const server = start();
+const config = loadConfig();
+const server = start(config);
 
+exports.config = config;
 exports.server = server;
 

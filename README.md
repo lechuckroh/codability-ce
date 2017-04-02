@@ -8,3 +8,4 @@
 * [koa-router](https://github.com/alexmingoia/koa-router)
 * [koa-mongo](https://github.com/nswbmw/koa-mongo)
 * [winston](https://github.com/winstonjs/winston)
+* [database-cleaner](https://github.com/emerleite/node-database-cleaner)

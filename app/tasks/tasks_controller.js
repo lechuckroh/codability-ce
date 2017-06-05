@@ -3,70 +3,110 @@
 const winston = require('winston');
 const Task = require('./task');
 
-exports.status = async function(ctx, next) {
-    const taskId = ctx.params.taskId;
-    const task = await Task.findOne({id: taskId});
-
-    if (task) {
+/**
+ * 문제 목록 조회
+ */
+exports.getTaskList = async function (ctx, next) {
+    ctx.body = 'test';
+    try {
+        const taskList = await Task.find({});
+        ctx.body = taskList.map(task => task.toObject());
         ctx.status = 200;
-        ctx.body = task;
-    } else {
-        ctx.status = 404;
-        ctx.body = `No such task with taskId=${taskId}`;
+    } catch (err) {
+        ctx.status = 500;
+        ctx.body = err;
     }
 };
 
-exports.query = async function(ctx, next) {
-    const taskId = ctx.params.taskId;
-    const questionIdx = ctx.params.idx;
-
-    winston.info(taskId, questionIdx);
-
-    // TODO
-    ctx.status = 501;
-    ctx.body = 'query is not implemented';
-
-    await next();
-};
-
-exports.start = async function(ctx, next) {
-    const taskId = ctx.params.taskId;
-
-    winston.info(taskId);
-
-    // TODO
-    ctx.status = 501;
-    ctx.body = 'start is not implemented';
-
-    await next();
-};
-
-exports.run = async function (ctx, next) {
+/**
+ * 문제 생성
+ */
+exports.postTask = async function (ctx, next) {
     const body = ctx.request.body;
-    const lang = body.lang;
-    const code = body.code;
-    const taskId = ctx.params.taskId;
-    const idx = ctx.params.idx;
-
-    winston.info(taskId, idx, lang, code);
-
-    // TODO
-    ctx.status = 501;
-    ctx.body = 'tasks test is not implemented';
-
-    await next();
+    try {
+        const task = new Task(body);
+        await task.save();
+        ctx.body = task.toObject();
+        ctx.status = 201;
+    } catch (err) {
+        ctx.status = 500;
+        ctx.body = err;
+    }
 };
 
-exports.submit = async function (ctx, next) {
-    const body = ctx.request.body;
-    const codes = body.codes;
-    const taskId = ctx.params.id;
+/**
+ * 문제 조회
+ */
+exports.getTask = async function (ctx, next) {
+    const {taskId} = ctx.params;
+    try {
+        const task = await Task.findOne({_id: taskId});
 
-    winston.info(taskId, codes);
+        if (task) {
+            ctx.status = 200;
+            ctx.body = task.toObject();
+        } else {
+            ctx.status = 500;
+            ctx.body = `No such task with taskId=${taskId}`;
+        }
+    } catch (err) {
+        ctx.status = 500;
+        ctx.body = err;
+    }
+};
+
+/**
+ * 문제 수정
+ */
+exports.putTask = async function (ctx, next) {
+    const {taskId} = ctx.params;
+    const body = ctx.request.body;
+    try {
+        await Task.update(Object.assign({_id: taskId}), body);
+        ctx.status = 200;
+    } catch (err) {
+        ctx.status = 500;
+        ctx.body = err;
+    }
+};
+
+/**
+ * 문제 삭제
+ */
+exports.deleteTask = async function (ctx, next) {
+    const {taskId} = ctx.params;
 
     // TODO
-    ctx.status = 501;
-    ctx.body = 'submit request is not implemented';
+};
 
-    await next();
+/**
+ * 문제 테스트 조회
+ */
+exports.getTaskUnitTests = async function (ctx, next) {
+    const {taskId} = ctx.params;
+    // TODO
+};
+
+/**
+ * 문제 테스트 추가
+ */
+exports.postTaskUnitTest = async function (ctx, next) {
+    const {taskId} = ctx.params;
+    // TODO
+};
+
+/**
+ * 문제 테스트 수정
+ */
+exports.updateTaskUnitTest = async function (ctx, next) {
+    const {taskId, testId} = ctx.params;
+    // TODO
+};
+
+/**
+ * 문제 테스트 삭제
+ */
+exports.deleteTaskUnitTest = async function (ctx, next) {
+    const {taskId, testId} = ctx.params;
+    // TODO
 };

@@ -2,6 +2,7 @@
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const schemaHelper = require('../schema_helper');
 
 /**
  * 풀어야할 문제
@@ -27,16 +28,8 @@ const TaskSchema = new Schema({
     }
 });
 
-if (!TaskSchema.options.toObject) {
-    TaskSchema.options.toObject = {};
-}
-
-TaskSchema.options.toObject.transform = function(doc, ret) {
-    ret.id = ret._id;
-    delete ret._id;
-    delete ret.__v;
-    return ret;
-};
+schemaHelper.customizeToJSON(TaskSchema);
+schemaHelper.customizeToObject(TaskSchema);
 
 const Task = mongoose.model('task', TaskSchema);
 

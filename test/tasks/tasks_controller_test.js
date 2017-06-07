@@ -5,6 +5,7 @@ const app = require('../../app');
 const request = require('supertest').agent(app.server);
 const helper = require('../helper');
 const Task = require('../../app/tasks/task');
+const TaskUnitTest = require('../../app/tasks/task_unit_test');
 
 describe('tasks', function () {
     describe('GET /tasks', function () {
@@ -16,7 +17,7 @@ describe('tasks', function () {
             await task1.save();
             await task2.save();
 
-            const expected = JSON.stringify(tasks.map(o => o.toObject()));
+            const expected = JSON.stringify(tasks);
             await request
                 .get('/tasks')
                 .expect(200)
@@ -85,18 +86,26 @@ describe('tasks', function () {
         })
     });
 
-    // describe('GET /tasks/taskId/tests', function () {
-    //     it('returns matching tests', async function() {
-    //         const task = new Task({name: 'task1', level: 1});
-    //         await task.save();
-    //
-    //         const taskId = task._id;
-    //
-    //         const expected = JSON.stringify(task.toObject());
-    //         await request
-    //             .get(`/tasks/${taskId}`)
-    //             .expect(200)
-    //             .expect(expected);
-    //     })
-    // });
+    describe('GET /tasks/taskId/tests', function () {
+        it('returns matching tests', async function() {
+            const task = new Task({name: 'task1', level: 1});
+            await task.save();
+            const taskId = task._id;
+
+            const unitTest = new TaskUnitTest({
+                initCode: 'initCode',
+                testCode: 'testCode',
+                language: 'java',
+                scoreFactor: 1.0,
+                task: task.objectId
+            });
+            await unitTest.save();
+
+            const expected = JSON.stringify([unitTest]);
+            await request
+                .get(`/tasks/${taskId}/tests`)
+                .expect(200)
+                .expect(expected);
+        })
+    });
 });

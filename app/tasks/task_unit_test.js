@@ -2,6 +2,7 @@
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const schemaHelper = require('../schema_helper');
 
 /**
  * 프로그래밍 언어별 문제 유닛 테스트
@@ -34,6 +35,9 @@ const TaskUnitTestSchema = new Schema({
         ref: 'task'
     }
 });
+
+schemaHelper.customizeToJSON(TaskUnitTestSchema);
+schemaHelper.customizeToObject(TaskUnitTestSchema);
 
 const TaskUnitTest = mongoose.model('taskUnitTest', TaskUnitTestSchema);
 

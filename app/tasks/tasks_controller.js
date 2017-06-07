@@ -2,6 +2,7 @@
 
 const winston = require('winston');
 const Task = require('./task');
+const TaskUnitTest = require('./task_unit_test');
 
 /**
  * 문제 목록 조회
@@ -40,7 +41,7 @@ exports.postTask = async function (ctx) {
 exports.getTask = async function (ctx) {
     const {taskId} = ctx.params;
     try {
-        const task = await Task.findOne({_id: taskId});
+        const task = await Task.findById(taskId);
 
         if (task) {
             ctx.status = 200;
@@ -91,7 +92,21 @@ exports.deleteTask = async function (ctx) {
  */
 exports.getTaskUnitTests = async function (ctx, next) {
     const {taskId} = ctx.params;
-    // TODO
+
+    try {
+        const task = await Task.findById(taskId);
+        if (task) {
+            const list = await TaskUnitTest.find({task: task.objectId});
+            ctx.body = list.map(unitTest => unitTest.toObject());
+        } else {
+            ctx.body = [];
+        }
+        ctx.status = 200;
+    } catch (err) {
+        console.error(err);
+        ctx.status = 500;
+        ctx.body = err;
+    }
 };
 
 /**
@@ -99,7 +114,15 @@ exports.getTaskUnitTests = async function (ctx, next) {
  */
 exports.postTaskUnitTest = async function (ctx, next) {
     const {taskId} = ctx.params;
-    // TODO
+
+    try {
+        // TODO
+        ctx.status = 501;
+    } catch (err) {
+        console.error(err);
+        ctx.status = 500;
+        ctx.body = err;
+    }
 };
 
 /**
@@ -107,7 +130,15 @@ exports.postTaskUnitTest = async function (ctx, next) {
  */
 exports.updateTaskUnitTest = async function (ctx, next) {
     const {taskId, testId} = ctx.params;
-    // TODO
+
+    try {
+        // TODO
+        ctx.status = 501;
+    } catch (err) {
+        console.error(err);
+        ctx.status = 500;
+        ctx.body = err;
+    }
 };
 
 /**
@@ -115,5 +146,13 @@ exports.updateTaskUnitTest = async function (ctx, next) {
  */
 exports.deleteTaskUnitTest = async function (ctx, next) {
     const {taskId, testId} = ctx.params;
-    // TODO
+
+    try {
+        // TODO
+        ctx.status = 501;
+    } catch (err) {
+        console.error(err);
+        ctx.status = 500;
+        ctx.body = err;
+    }
 };

@@ -69,4 +69,34 @@ describe('tasks', function () {
             assert(taskAfterUpdate.name === 'task2');
         })
     });
+
+    describe('DELETE /tasks/taskId', function () {
+        it('returns statusCode 204', async function() {
+            const task = new Task({name: 'task1', level: 1});
+            await task.save();
+            const taskId = task._id;
+
+            await request
+                .delete(`/tasks/${taskId}`)
+                .expect(204);
+
+            const taskAfterDelete = await Task.findOne({_id: taskId});
+            assert(!taskAfterDelete);
+        })
+    });
+
+    // describe('GET /tasks/taskId/tests', function () {
+    //     it('returns matching tests', async function() {
+    //         const task = new Task({name: 'task1', level: 1});
+    //         await task.save();
+    //
+    //         const taskId = task._id;
+    //
+    //         const expected = JSON.stringify(task.toObject());
+    //         await request
+    //             .get(`/tasks/${taskId}`)
+    //             .expect(200)
+    //             .expect(expected);
+    //     })
+    // });
 });

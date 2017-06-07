@@ -6,7 +6,7 @@ const Task = require('./task');
 /**
  * 문제 목록 조회
  */
-exports.getTaskList = async function (ctx, next) {
+exports.getTaskList = async function (ctx) {
     ctx.body = 'test';
     try {
         const taskList = await Task.find({});
@@ -21,7 +21,7 @@ exports.getTaskList = async function (ctx, next) {
 /**
  * 문제 생성
  */
-exports.postTask = async function (ctx, next) {
+exports.postTask = async function (ctx) {
     const body = ctx.request.body;
     try {
         const task = new Task(body);
@@ -37,7 +37,7 @@ exports.postTask = async function (ctx, next) {
 /**
  * 문제 조회
  */
-exports.getTask = async function (ctx, next) {
+exports.getTask = async function (ctx) {
     const {taskId} = ctx.params;
     try {
         const task = await Task.findOne({_id: taskId});
@@ -58,11 +58,11 @@ exports.getTask = async function (ctx, next) {
 /**
  * 문제 수정
  */
-exports.putTask = async function (ctx, next) {
+exports.putTask = async function (ctx) {
     const {taskId} = ctx.params;
     const body = ctx.request.body;
     try {
-        await Task.update(Object.assign({_id: taskId}), body);
+        await Task.findByIdAndUpdate(taskId, { $set: body});
         ctx.status = 200;
     } catch (err) {
         ctx.status = 500;
@@ -73,10 +73,17 @@ exports.putTask = async function (ctx, next) {
 /**
  * 문제 삭제
  */
-exports.deleteTask = async function (ctx, next) {
+exports.deleteTask = async function (ctx) {
     const {taskId} = ctx.params;
 
-    // TODO
+    try {
+        await Task.findByIdAndRemove(taskId);
+        ctx.status = 204;
+    } catch (err) {
+        console.error(err);
+        ctx.status = 500;
+        ctx.body = err;
+    }
 };
 
 /**

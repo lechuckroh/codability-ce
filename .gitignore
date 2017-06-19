@@ -40,3 +40,4 @@ jspm_packages
 /config/config-*.json
 !/config/config-example.json
 yarn.lock
+/package-lock.json

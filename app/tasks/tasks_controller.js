@@ -2,7 +2,6 @@
 
 const winston = require('winston');
 const Task = require('./task');
-const TaskUnitTest = require('./task_unit_test');
 
 /**
  * 문제 목록 조회
@@ -63,7 +62,7 @@ exports.putTask = async function (ctx) {
     const {taskId} = ctx.params;
     const body = ctx.request.body;
     try {
-        await Task.findByIdAndUpdate(taskId, { $set: body});
+        await Task.findByIdAndUpdate(taskId, {$set: body});
         ctx.status = 200;
     } catch (err) {
         ctx.status = 500;
@@ -90,17 +89,12 @@ exports.deleteTask = async function (ctx) {
 /**
  * 문제 테스트 조회
  */
-exports.getTaskUnitTests = async function (ctx, next) {
+exports.getTaskUnitTests = async function (ctx) {
     const {taskId} = ctx.params;
 
     try {
         const task = await Task.findById(taskId);
-        if (task) {
-            const list = await TaskUnitTest.find({task: task.objectId});
-            ctx.body = list.map(unitTest => unitTest.toObject());
-        } else {
-            ctx.body = [];
-        }
+        ctx.body = task ? task.unitTests : [];
         ctx.status = 200;
     } catch (err) {
         console.error(err);
@@ -112,12 +106,20 @@ exports.getTaskUnitTests = async function (ctx, next) {
 /**
  * 문제 테스트 추가
  */
-exports.postTaskUnitTest = async function (ctx, next) {
+exports.postTaskUnitTest = async function (ctx) {
     const {taskId} = ctx.params;
+    const body = ctx.request.body;
 
     try {
-        // TODO
-        ctx.status = 501;
+        const task = await Task.findById(taskId);
+        if (task) {
+            task.unitTests.push(body);
+            await task.save();
+            ctx.status = 201;
+        } else {
+            ctx.status = 400;
+            ctx.body = 'task not found';
+        }
     } catch (err) {
         console.error(err);
         ctx.status = 500;
@@ -128,12 +130,27 @@ exports.postTaskUnitTest = async function (ctx, next) {
 /**
  * 문제 테스트 수정
  */
-exports.updateTaskUnitTest = async function (ctx, next) {
+exports.updateTaskUnitTest = async function (ctx) {
     const {taskId, testId} = ctx.params;
+    const body = ctx.request.body;
+    const updateMap = Object.entries(body).reduce(function (map, entry) {
+        const [key, value] = entry;
+        map[`unitTests.$.${key}`] = value;
+        return map;
+    }, {});
 
     try {
-        // TODO
-        ctx.status = 501;
+        await Task.update({
+            _id: taskId,
+            unitTests: {
+                $elemMatch: {
+                    _id: testId
+                }
+            }
+        }, {
+            '$set': updateMap
+        });
+        ctx.status = 200;
     } catch (err) {
         console.error(err);
         ctx.status = 500;
@@ -144,12 +161,25 @@ exports.updateTaskUnitTest = async function (ctx, next) {
 /**
  * 문제 테스트 삭제
  */
-exports.deleteTaskUnitTest = async function (ctx, next) {
+exports.deleteTaskUnitTest = async function (ctx) {
     const {taskId, testId} = ctx.params;
 
     try {
-        // TODO
-        ctx.status = 501;
+        await Task.update({
+            _id: taskId,
+            unitTests: {
+                $elemMatch: {
+                    _id: testId
+                }
+            }
+        }, {
+            '$pull': {
+                unitTests: {
+                    _id: testId
+                }
+            }
+        });
+        ctx.status = 204;
     } catch (err) {
         console.error(err);
         ctx.status = 500;

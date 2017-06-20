@@ -1,6 +1,5 @@
 'use strict';
 
-const app = require('../app');
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 const DatabaseCleaner = require('database-cleaner');

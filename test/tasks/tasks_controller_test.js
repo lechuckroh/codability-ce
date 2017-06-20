@@ -40,7 +40,7 @@ describe('tasks', function () {
     });
 
     describe('POST /tasks', function () {
-        it('returns matching task', async function() {
+        it('adds a task', async function() {
             await request
                 .post('/tasks')
                 .send({name: 'task1', level: 1})
@@ -55,7 +55,7 @@ describe('tasks', function () {
     });
 
     describe('PUT /tasks', function () {
-        it('returns statusCode 200', async function() {
+        it('updates a task', async function() {
             const task = new Task({name: 'task1', level: 1});
             await task.save();
             const taskId = task._id;
@@ -71,7 +71,7 @@ describe('tasks', function () {
     });
 
     describe('DELETE /tasks/taskId', function () {
-        it('returns statusCode 204', async function() {
+        it('removes a task', async function() {
             const task = new Task({name: 'task1', level: 1});
             await task.save();
             const taskId = task._id;

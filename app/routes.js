@@ -15,6 +15,7 @@ router.get('/exams', examsController.getExamList);
 router.post('/exams', examsController.postExam);
 router.get('/exams/:examId', examsController.getExam);
 router.put('/exams/:examId', examsController.putExam);
+router.delete('/exams/:examId', examsController.deleteExam);
 router.put('/exams/:examId/archive', examsController.archiveExam);
 router.put('/exams/:examId/start', examsController.startExam);
 router.put('/exams/:examId/submit', examsController.submitExam);

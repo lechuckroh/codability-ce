@@ -4,54 +4,106 @@ const mongoose = require('mongoose');
 const winston = require('winston');
 const Task = require('../tasks/task');
 const Exam = require('./exam');
-const TestRun = require('./test_run');
 
 /**
  * 시험 목록 조회
  */
-exports.getExamList = async function (ctx, next) {
-    // TODO
+exports.getExamList = async function (ctx) {
+    const {interviewee} = ctx.query;
+
+    if (!interviewee) {
+        ctx.status = 400;
+        ctx.body = "'interviewee' parameter is not set";
+        return;
+    }
+
+    // TODO: owner 확인
+
+    try {
+        const exams = await Exam.find({
+            interviewee: interviewee
+        });
+
+        ctx.status = 200;
+        ctx.body = exams;
+    } catch (e) {
+        ctx.status = 500;
+        ctx.body = e;
+    }
 };
 
 /**
  * 시험 생성
  */
-exports.postExam = async function (ctx, next) {
-    const {taskIds} = ctx.request.body;
-    const taskObjectIds = taskIds.map(id => mongoose.Types.ObjectId(id));
-    try {
-        const tasks = await Task.find({
-            '_id': {$in: taskObjectIds}
-        });
+exports.postExam = async function (ctx) {
+    const {interviewee, dueDate, taskIds} = ctx.request.body;
+    const taskObjectIds = taskIds ?
+        taskIds.map(id => mongoose.Types.ObjectId(id)) : [];
 
+    try {
+        // TODO: owner 추가
         const exam = new Exam({
+            interviewee: interviewee,
             archived: false,
-            dueDate: null,
+            dueDate: dueDate,
+            createdAt: Date.now(),
             score: 0
         });
-        exam.tasks.push(...tasks);
-        exam.save();
 
-        ctx.status = 200;
-        ctx.body = exam.hash;
+        // taskIds 지정시 Task 추가
+        if (taskObjectIds.length > 0) {
+            const tasks = await Task.find({
+                '_id': {$in: taskObjectIds}
+            });
+            exam.tasks.push(...tasks);
+        }
+        await exam.save();
+
+        ctx.status = 201;
+        ctx.body = exam._id;
     } catch (e) {
         ctx.status = 500;
-        ctx.body = `Failed`;
+        ctx.body = e;
     }
 };
 
 /**
  * 시험 내용 조회
  */
-exports.getExam = async function (ctx, next) {
+exports.getExam = async function (ctx) {
     const {examId} = ctx.params;
-    // TODO
+
+    // TODO: owner 확인
+
+    try {
+        const exam = await Exam.findOne({
+            '_id': examId
+        });
+        if (exam) {
+            ctx.status = 200;
+            ctx.body = exam;
+        } else {
+            ctx.status = 400;
+            ctx.body = 'matching exam not found';
+        }
+    } catch (e) {
+        ctx.status = 500;
+        ctx.body = 'Failed';
+    }
 };
 
 /**
  * 시험 내용 수정
  */
 exports.putExam = async function (ctx, next) {
+    const {examId} = ctx.params;
+    // TODO
+};
+
+/**
+ * 시험 삭제
+ */
+exports.deleteExam = async function (ctx, next) {
     const {examId} = ctx.params;
     // TODO
 };

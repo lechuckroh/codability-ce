@@ -21,14 +21,14 @@ describe('exams', function () {
             const expected = JSON.stringify([exam2, exam3]);
             await request
                 .get('/exams')
-                .query({ interviewee: 'Bar'})
+                .query({interviewee: 'Bar'})
                 .expect(200)
                 .expect(expected);
         });
     });
 
     describe('POST /exams', function () {
-        it('adds an exam', async function() {
+        it('adds an exam', async function () {
             await request
                 .post('/exams')
                 .send({
@@ -62,31 +62,31 @@ describe('exams', function () {
     });
 
     describe('PUT /tasks/:examId', function () {
-        it('updates an exam', async function() {
+        it('updates an exam', async function () {
             // TODO
         })
     });
 
     describe('DELETE /exams/:examId', function () {
-        it('removes an exam', async function() {
+        it('removes an exam', async function () {
             // TODO
         })
     });
 
     describe('PUT /exams/:examId/archive', function () {
-        it('archives an exam', async function() {
+        it('archives an exam', async function () {
             // TODO
         })
     });
 
     describe('PUT /exams/:examId/start', function () {
-        it('starts an exam', async function() {
+        it('starts an exam', async function () {
             // TODO
         })
     });
 
     describe('PUT /exams/:examId/submit', function () {
-        it('submits an exam', async function() {
+        it('submits an exam', async function () {
             // TODO
         })
     });

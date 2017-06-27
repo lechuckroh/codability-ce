@@ -17,7 +17,7 @@ exports.getExamList = async function (ctx) {
         return;
     }
 
-    // TODO: owner 확인
+    // TODO: 권한 확인
 
     try {
         const exams = await Exam.find({
@@ -73,7 +73,7 @@ exports.postExam = async function (ctx) {
 exports.getExam = async function (ctx) {
     const {examId} = ctx.params;
 
-    // TODO: owner 확인
+    // TODO: 권한 확인
 
     try {
         const exam = await Exam.findOne({
@@ -97,6 +97,8 @@ exports.getExam = async function (ctx) {
  */
 exports.putExam = async function (ctx, next) {
     const {examId} = ctx.params;
+
+    // TODO: 권한 확인
     // TODO
 };
 
@@ -105,6 +107,9 @@ exports.putExam = async function (ctx, next) {
  */
 exports.deleteExam = async function (ctx, next) {
     const {examId} = ctx.params;
+
+    // TODO: 권한 확인
+
     // TODO
 };
 
@@ -113,6 +118,9 @@ exports.deleteExam = async function (ctx, next) {
  */
 exports.archiveExam = async function (ctx, next) {
     const {examId} = ctx.params;
+
+    // TODO: 권한 확인
+
     // TODO
 };
 
@@ -121,6 +129,8 @@ exports.archiveExam = async function (ctx, next) {
  */
 exports.startExam = async function (ctx, next) {
     const {examId} = ctx.params;
+
+    // TODO: 권한 확인
     // TODO
 };
 
@@ -129,6 +139,8 @@ exports.startExam = async function (ctx, next) {
  */
 exports.submitExam = async function (ctx, next) {
     const {examId} = ctx.params;
+
+    // TODO: 권한 확인
     // TODO
 };
 
@@ -137,6 +149,8 @@ exports.submitExam = async function (ctx, next) {
  */
 exports.getTestRun = async function (ctx, next) {
     const {examId, taskUnitTestId} = ctx.params;
+
+    // TODO: 권한 확인
     // TODO
 };
 
@@ -145,6 +159,8 @@ exports.getTestRun = async function (ctx, next) {
  */
 exports.runTest = async function (ctx, next) {
     const {examId, taskUnitTestId} = ctx.params;
+
+    // TODO: 권한 확인
     // TODO
 };
 

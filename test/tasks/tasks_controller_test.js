@@ -25,7 +25,7 @@ describe('tasks', function () {
     });
 
     describe('GET /tasks/taskId', function () {
-        it('returns matching task', async function() {
+        it('returns matching task', async function () {
             const task = new Task({name: 'task1', level: 1});
             await task.save();
 
@@ -40,7 +40,7 @@ describe('tasks', function () {
     });
 
     describe('POST /tasks', function () {
-        it('adds a task', async function() {
+        it('adds a task', async function () {
             await request
                 .post('/tasks')
                 .send({name: 'task1', level: 1})
@@ -55,7 +55,7 @@ describe('tasks', function () {
     });
 
     describe('PUT /tasks', function () {
-        it('updates a task', async function() {
+        it('updates a task', async function () {
             const task = new Task({name: 'task1', level: 1});
             await task.save();
             const taskId = task._id;
@@ -71,7 +71,7 @@ describe('tasks', function () {
     });
 
     describe('DELETE /tasks/taskId', function () {
-        it('removes a task', async function() {
+        it('removes a task', async function () {
             const task = new Task({name: 'task1', level: 1});
             await task.save();
             const taskId = task._id;
@@ -86,7 +86,7 @@ describe('tasks', function () {
     });
 
     describe('GET /tasks/taskId/tests', function () {
-        it('returns matching tests', async function() {
+        it('returns matching tests', async function () {
             const task = new Task({name: 'task1', level: 1});
             task.unitTests.push({
                 initCode: 'initCode',
@@ -106,7 +106,7 @@ describe('tasks', function () {
     });
 
     describe('POST /tasks/taskId/tests', function () {
-        it('adds tests', async function() {
+        it('adds tests', async function () {
             const task = new Task({name: 'task1', level: 1});
             await task.save();
             const taskId = task._id;
@@ -133,7 +133,7 @@ describe('tasks', function () {
     });
 
     describe('PUT /tasks/:taskId/tests/:testId', function () {
-        it('updates tests', async function() {
+        it('updates tests', async function () {
             const task = new Task({name: 'task1', level: 1});
             task.unitTests.push({
                 initCode: 'initCode',
@@ -167,7 +167,7 @@ describe('tasks', function () {
     });
 
     describe('DELETE /tasks/:taskId/tests/:testId', function () {
-        it('removes tests', async function() {
+        it('removes tests', async function () {
             const task = new Task({name: 'task1', level: 1});
             task.unitTests.push({
                 initCode: 'initCode',

@@ -1,5 +1,9 @@
 "use strict";
 
+const superagent = require('superagent');
+const jwtHelper = require('../jwt_helper');
+jwtHelper.fillSuperagent(superagent);
+
 const assert = require('assert');
 const app = require('../../app');
 const request = require('supertest').agent(app.server);
@@ -19,6 +23,7 @@ describe('tasks', function () {
             const expected = JSON.stringify(tasks);
             await request
                 .get('/tasks')
+                .bearer(jwtHelper.createToken('foo', 0, true))
                 .expect(200)
                 .expect(expected);
         });
@@ -34,6 +39,7 @@ describe('tasks', function () {
             const expected = JSON.stringify(task.toObject());
             await request
                 .get(`/tasks/${taskId}`)
+                .bearer(jwtHelper.createToken('foo', 0, true))
                 .expect(200)
                 .expect(expected);
         })
@@ -43,6 +49,7 @@ describe('tasks', function () {
         it('adds a task', async function () {
             await request
                 .post('/tasks')
+                .bearer(jwtHelper.createToken('foo', 0, true))
                 .send({name: 'task1', level: 1})
                 .expect(res => {
                     const body = res.body;
@@ -62,6 +69,7 @@ describe('tasks', function () {
 
             await request
                 .put(`/tasks/${taskId}`)
+                .bearer(jwtHelper.createToken('foo', 0, true))
                 .send({name: 'task2'})
                 .expect(200);
 
@@ -78,6 +86,7 @@ describe('tasks', function () {
 
             await request
                 .delete(`/tasks/${taskId}`)
+                .bearer(jwtHelper.createToken('foo', 0, true))
                 .expect(204);
 
             const taskAfterDelete = await Task.findOne({_id: taskId});
@@ -100,6 +109,7 @@ describe('tasks', function () {
             const expected = JSON.stringify(task.unitTests);
             await request
                 .get(`/tasks/${taskId}/tests`)
+                .bearer(jwtHelper.createToken('foo', 0, true))
                 .expect(200)
                 .expect(expected);
         })
@@ -120,6 +130,7 @@ describe('tasks', function () {
 
             await request
                 .post(`/tasks/${taskId}/tests`)
+                .bearer(jwtHelper.createToken('foo', 0, true))
                 .send(test)
                 .expect(201);
 
@@ -154,6 +165,7 @@ describe('tasks', function () {
 
             await request
                 .put(`/tasks/${taskId}/tests/${testId}`)
+                .bearer(jwtHelper.createToken('foo', 0, true))
                 .send(testUpdate)
                 .expect(200);
 
@@ -181,6 +193,7 @@ describe('tasks', function () {
 
             await request
                 .delete(`/tasks/${taskId}/tests/${testId}`)
+                .bearer(jwtHelper.createToken('foo', 0, true))
                 .expect(204);
 
             const actualTask = await Task.findById(taskId);

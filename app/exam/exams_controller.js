@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const winston = require('winston');
 const Task = require('../tasks/task');
 const Exam = require('./exam');
+const jwt = require('../jwt');
+
 
 /**
  * 시험 목록 조회
@@ -17,13 +19,14 @@ exports.getExamList = async function (ctx) {
         return;
     }
 
-    // TODO: 권한 확인
-
     try {
-        const exams = await Exam.find({
-            interviewee: interviewee
-        });
+        const {admin, loginId} = jwt.decode(ctx.req.headers);
+        const cond = {interviewee: interviewee};
+        if (!admin) {
+            cond.owner = loginId;
+        }
 
+        const exams = await Exam.find(cond);
         ctx.status = 200;
         ctx.body = exams;
     } catch (e) {
@@ -41,26 +44,32 @@ exports.postExam = async function (ctx) {
         taskIds.map(id => mongoose.Types.ObjectId(id)) : [];
 
     try {
-        // TODO: owner 추가
-        const exam = new Exam({
-            interviewee: interviewee,
-            archived: false,
-            dueDate: dueDate,
-            createdAt: Date.now(),
-            score: 0
-        });
-
-        // taskIds 지정시 Task 추가
-        if (taskObjectIds.length > 0) {
-            const tasks = await Task.find({
-                '_id': {$in: taskObjectIds}
+        const {admin, loginId} = jwt.decode(ctx.req.headers);
+        if (admin) {
+            const exam = new Exam({
+                interviewee: interviewee,
+                owner: loginId,
+                archived: false,
+                dueDate: dueDate,
+                createdAt: Date.now(),
+                score: 0
             });
-            exam.tasks.push(...tasks);
-        }
-        await exam.save();
 
-        ctx.status = 201;
-        ctx.body = exam._id;
+            // taskIds 지정시 Task 추가
+            if (taskObjectIds.length > 0) {
+                const tasks = await Task.find({
+                    '_id': {$in: taskObjectIds}
+                });
+                exam.tasks.push(...tasks);
+            }
+            await exam.save();
+
+            ctx.status = 201;
+            ctx.body = exam._id;
+        } else {
+            ctx.status = 401;
+            ctx.body = 'admin required';
+        }
     } catch (e) {
         ctx.status = 500;
         ctx.body = e;
@@ -72,8 +81,6 @@ exports.postExam = async function (ctx) {
  */
 exports.getExam = async function (ctx) {
     const {examId} = ctx.params;
-
-    // TODO: 권한 확인
 
     try {
         const exam = await Exam.findOne({
@@ -88,7 +95,7 @@ exports.getExam = async function (ctx) {
         }
     } catch (e) {
         ctx.status = 500;
-        ctx.body = 'Failed';
+        ctx.body = e;
     }
 };
 

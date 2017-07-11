@@ -1,5 +1,9 @@
 "use strict";
 
+const superagent = require('superagent');
+const jwtHelper = require('../jwt_helper');
+jwtHelper.fillSuperagent(superagent);
+
 const assert = require('assert');
 const app = require('../../app');
 const request = require('supertest').agent(app.server);
@@ -10,17 +14,20 @@ describe('exams', function () {
 
     describe('GET /exams', function () {
         it('returns exams by interviewee', async function () {
-            const exam1 = new Exam({interviewee: 'Foo'});
-            const exam2 = new Exam({interviewee: 'Bar'});
-            const exam3 = new Exam({interviewee: 'Bar'});
+            const exam1 = new Exam({interviewee: 'Foo', owner: 'foo'});
+            const exam2 = new Exam({interviewee: 'Bar', owner: 'bar'});
+            const exam3 = new Exam({interviewee: 'Bar', owner: 'foo'});
+            const exam4 = new Exam({interviewee: 'Bar', owner: 'foo'});
             await Exam.remove({});
             await exam1.save();
             await exam2.save();
             await exam3.save();
+            await exam4.save();
 
-            const expected = JSON.stringify([exam2, exam3]);
+            const expected = JSON.stringify([exam3, exam4]);
             await request
                 .get('/exams')
+                .bearer(jwtHelper.createToken('foo', 0, false))
                 .query({interviewee: 'Bar'})
                 .expect(200)
                 .expect(expected);
@@ -31,6 +38,7 @@ describe('exams', function () {
         it('adds an exam', async function () {
             await request
                 .post('/exams')
+                .bearer(jwtHelper.createToken('foo', 0, true))
                 .send({
                     interviewee: 'foo',
                     dueDate: '2017-01-01'

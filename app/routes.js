@@ -1,40 +1,68 @@
 'use strict';
 
 const Router = require('koa-router');
+const authController = require('./auth/auth_controller');
 const examsController = require('./exam/exams_controller');
 const tasksController = require('./tasks/tasks_controller');
+const usersController = require('./users/users_controller');
 const router = new Router();
 const packageJson = require('../package.json');
+const jwt = require('./jwt');
 
-router.get('/', ctx => {
-    ctx.body = `${packageJson.name} v${packageJson.version}`;
-});
+const koaJwt = jwt.koaJwt;
 
-// Exam
-router.get('/exams', examsController.getExamList);
-router.post('/exams', examsController.postExam);
-router.get('/exams/:examId', examsController.getExam);
-router.put('/exams/:examId', examsController.putExam);
-router.delete('/exams/:examId', examsController.deleteExam);
-router.put('/exams/:examId/archive', examsController.archiveExam);
-router.put('/exams/:examId/start', examsController.startExam);
-router.put('/exams/:examId/submit', examsController.submitExam);
+const get = (uri, fn) => router.get(uri, fn);
+const post = (uri, fn) => router.post(uri, fn);
+const put = (uri, fn) => router.put(uri, fn);
+const del = (uri, fn) => router.delete(uri, fn);
+const jwtGet = (uri, fn) => router.get(uri, koaJwt, fn);
+const jwtPost = (uri, fn) => router.post(uri, koaJwt, fn);
+const jwtPut = (uri, fn) => router.put(uri, koaJwt, fn);
+const jwtDel = (uri, fn) => router.delete(uri, koaJwt, fn);
 
-// TestRun
-router.get('/exams/:examId/runs/:taskUnitTestId', examsController.getTestRun);
-router.post('/exams/:examId/runs/:taskUnitTestId', examsController.runTest);
 
-// Task
-router.get('/tasks', tasksController.getTaskList);
-router.get('/tasks/:taskId', tasksController.getTask);
-router.post('/tasks', tasksController.postTask);
-router.put('/tasks/:taskId', tasksController.putTask);
-router.delete('/tasks/:taskId', tasksController.deleteTask);
+const registerRoutes = function () {
+    get('/', ctx => {
+        ctx.body = `${packageJson.name} v${packageJson.version}`;
+    });
 
-// TaskTest
-router.get('/tasks/:taskId/tests', tasksController.getTaskUnitTests);
-router.post('/tasks/:taskId/tests', tasksController.postTaskUnitTest);
-router.put('/tasks/:taskId/tests/:testId', tasksController.updateTaskUnitTest);
-router.delete('/tasks/:taskId/tests/:testId', tasksController.deleteTaskUnitTest);
+    // Auth
+    post('/auth/login', authController.login);
+
+    // Exam
+    jwtGet('/exams', examsController.getExamList);
+    jwtPost('/exams', examsController.postExam);
+    get('/exams/:examId', examsController.getExam);
+    put('/exams/:examId', examsController.putExam);
+    del('/exams/:examId', examsController.deleteExam);
+    put('/exams/:examId/archive', examsController.archiveExam);
+    put('/exams/:examId/start', examsController.startExam);
+    put('/exams/:examId/submit', examsController.submitExam);
+
+    // TestRun
+    get('/exams/:examId/runs/:taskUnitTestId', examsController.getTestRun);
+    post('/exams/:examId/runs/:taskUnitTestId', examsController.runTest);
+
+    // Task
+    jwtGet('/tasks', tasksController.getTaskList);
+    jwtGet('/tasks/:taskId', tasksController.getTask);
+    jwtPost('/tasks', tasksController.postTask);
+    jwtPut('/tasks/:taskId', tasksController.putTask);
+    jwtDel('/tasks/:taskId', tasksController.deleteTask);
+
+    // TaskTest
+    jwtGet('/tasks/:taskId/tests', tasksController.getTaskUnitTests);
+    jwtPost('/tasks/:taskId/tests', tasksController.postTaskUnitTest);
+    jwtPut('/tasks/:taskId/tests/:testId', tasksController.updateTaskUnitTest);
+    jwtDel('/tasks/:taskId/tests/:testId', tasksController.deleteTaskUnitTest);
+
+    // User
+    jwtGet('/users', usersController.getUserList);
+    jwtGet('/users/:userId', usersController.getUserById);
+    jwtPost('/users', usersController.postUser);
+    jwtPut('/users', usersController.putUser);
+    jwtDel('/users/:userId', usersController.deleteUser);
+};
 
 exports.router = router;
+exports.registerRoutes = registerRoutes;

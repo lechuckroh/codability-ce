@@ -83,6 +83,7 @@ function initErrorLogger(app) {
 function registerRoutes(app) {
     app.use(bodyParser());
 
+    routes.registerRoutes();
     const router = routes.router;
     app.use(router.routes());
     app.use(router.allowedMethods());

@@ -37,7 +37,6 @@ jspm_packages
 
 .idea/workspace.xml
 .idea/markdown-*
+/config/codability.secret
 /config/config-*.json
 !/config/config-example.json
-yarn.lock
-/package-lock.json

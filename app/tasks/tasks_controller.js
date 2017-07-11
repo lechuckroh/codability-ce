@@ -2,6 +2,7 @@
 
 const winston = require('winston');
 const Task = require('./task');
+const jwt = require('../jwt');
 
 /**
  * 문제 목록 조회
@@ -12,9 +13,9 @@ exports.getTaskList = async function (ctx) {
         const taskList = await Task.find({});
         ctx.body = taskList.map(task => task.toObject());
         ctx.status = 200;
-    } catch (err) {
+    } catch (e) {
         ctx.status = 500;
-        ctx.body = err;
+        ctx.body = e;
     }
 };
 
@@ -24,13 +25,19 @@ exports.getTaskList = async function (ctx) {
 exports.postTask = async function (ctx) {
     const body = ctx.request.body;
     try {
-        const task = new Task(body);
-        await task.save();
-        ctx.body = task.toObject();
-        ctx.status = 201;
-    } catch (err) {
+        const {admin} = jwt.decode(ctx.req.headers);
+        if (admin) {
+            const task = new Task(body);
+            await task.save();
+            ctx.body = task.toObject();
+            ctx.status = 201;
+        } else {
+            ctx.status = 401;
+            ctx.body = 'admin required';
+        }
+    } catch (e) {
         ctx.status = 500;
-        ctx.body = err;
+        ctx.body = e;
     }
 };
 
@@ -49,9 +56,9 @@ exports.getTask = async function (ctx) {
             ctx.status = 500;
             ctx.body = `No such task with taskId=${taskId}`;
         }
-    } catch (err) {
+    } catch (e) {
         ctx.status = 500;
-        ctx.body = err;
+        ctx.body = e;
     }
 };
 
@@ -62,11 +69,17 @@ exports.putTask = async function (ctx) {
     const {taskId} = ctx.params;
     const body = ctx.request.body;
     try {
-        await Task.findByIdAndUpdate(taskId, {$set: body});
-        ctx.status = 200;
-    } catch (err) {
+        const {admin} = jwt.decode(ctx.req.headers);
+        if (admin) {
+            await Task.findByIdAndUpdate(taskId, {$set: body});
+            ctx.status = 200;
+        } else {
+            ctx.status = 401;
+            ctx.body = 'admin required';
+        }
+    } catch (e) {
         ctx.status = 500;
-        ctx.body = err;
+        ctx.body = e;
     }
 };
 
@@ -77,12 +90,18 @@ exports.deleteTask = async function (ctx) {
     const {taskId} = ctx.params;
 
     try {
-        await Task.findByIdAndRemove(taskId);
-        ctx.status = 204;
-    } catch (err) {
-        console.error(err);
+        const {admin} = jwt.decode(ctx.req.headers);
+        if (admin) {
+            await Task.findByIdAndRemove(taskId);
+            ctx.status = 204;
+        } else {
+            ctx.status = 401;
+            ctx.body = 'admin required';
+        }
+    } catch (e) {
+        console.error(e);
         ctx.status = 500;
-        ctx.body = err;
+        ctx.body = e;
     }
 };
 
@@ -96,10 +115,10 @@ exports.getTaskUnitTests = async function (ctx) {
         const task = await Task.findById(taskId);
         ctx.body = task ? task.unitTests : [];
         ctx.status = 200;
-    } catch (err) {
-        console.error(err);
+    } catch (e) {
+        console.error(e);
         ctx.status = 500;
-        ctx.body = err;
+        ctx.body = e;
     }
 };
 
@@ -111,19 +130,25 @@ exports.postTaskUnitTest = async function (ctx) {
     const body = ctx.request.body;
 
     try {
-        const task = await Task.findById(taskId);
-        if (task) {
-            task.unitTests.push(body);
-            await task.save();
-            ctx.status = 201;
+        const {admin} = jwt.decode(ctx.req.headers);
+        if (admin) {
+            const task = await Task.findById(taskId);
+            if (task) {
+                task.unitTests.push(body);
+                await task.save();
+                ctx.status = 201;
+            } else {
+                ctx.status = 400;
+                ctx.body = 'task not found';
+            }
         } else {
-            ctx.status = 400;
-            ctx.body = 'task not found';
+            ctx.status = 401;
+            ctx.body = 'admin required';
         }
-    } catch (err) {
-        console.error(err);
+    } catch (e) {
+        console.error(e);
         ctx.status = 500;
-        ctx.body = err;
+        ctx.body = e;
     }
 };
 
@@ -140,21 +165,27 @@ exports.updateTaskUnitTest = async function (ctx) {
     }, {});
 
     try {
-        await Task.update({
-            _id: taskId,
-            unitTests: {
-                $elemMatch: {
-                    _id: testId
+        const {admin} = jwt.decode(ctx.req.headers);
+        if (admin) {
+            await Task.update({
+                _id: taskId,
+                unitTests: {
+                    $elemMatch: {
+                        _id: testId
+                    }
                 }
-            }
-        }, {
-            '$set': updateMap
-        });
-        ctx.status = 200;
-    } catch (err) {
-        console.error(err);
+            }, {
+                '$set': updateMap
+            });
+            ctx.status = 200;
+        } else {
+            ctx.status = 401;
+            ctx.body = 'admin required';
+        }
+    } catch (e) {
+        console.error(e);
         ctx.status = 500;
-        ctx.body = err;
+        ctx.body = e;
     }
 };
 
@@ -165,24 +196,30 @@ exports.deleteTaskUnitTest = async function (ctx) {
     const {taskId, testId} = ctx.params;
 
     try {
-        await Task.update({
-            _id: taskId,
-            unitTests: {
-                $elemMatch: {
-                    _id: testId
-                }
-            }
-        }, {
-            '$pull': {
+        const {admin} = jwt.decode(ctx.req.headers);
+        if (admin) {
+            await Task.update({
+                _id: taskId,
                 unitTests: {
-                    _id: testId
+                    $elemMatch: {
+                        _id: testId
+                    }
                 }
-            }
-        });
-        ctx.status = 204;
-    } catch (err) {
-        console.error(err);
+            }, {
+                '$pull': {
+                    unitTests: {
+                        _id: testId
+                    }
+                }
+            });
+            ctx.status = 204;
+        } else {
+            ctx.status = 401;
+            ctx.body = 'admin required';
+        }
+    } catch (e) {
+        console.error(e);
         ctx.status = 500;
-        ctx.body = err;
+        ctx.body = e;
     }
 };

@@ -7,7 +7,6 @@ jwtHelper.fillSuperagent(superagent);
 const assert = require('assert');
 const app = require('../../app');
 const request = require('supertest').agent(app.server);
-const helper = require('../helper');
 const Task = require('../../app/tasks/task');
 
 describe('tasks', function () {
@@ -94,14 +93,17 @@ describe('tasks', function () {
         })
     });
 
-    describe('GET /tasks/taskId/tests', function () {
+    describe('GET /tasks/:taskId/tests', function () {
         it('returns matching tests', async function () {
-            const task = new Task({name: 'task1', level: 1});
-            task.unitTests.push({
-                initCode: 'initCode',
-                testCode: 'testCode',
-                language: 'java',
-                scoreFactor: 1.0,
+            const task = new Task({
+                name: 'task1',
+                level: 1,
+                unitTests: [{
+                    initCode: 'initCode',
+                    testCode: 'testCode',
+                    language: 'java',
+                    scoreFactor: 1.0
+                }]
             });
             await task.save();
             const taskId = task._id;
@@ -112,34 +114,6 @@ describe('tasks', function () {
                 .bearer(jwtHelper.createToken('foo', 0, true))
                 .expect(200)
                 .expect(expected);
-        })
-    });
-
-    describe('POST /tasks/taskId/tests', function () {
-        it('adds tests', async function () {
-            const task = new Task({name: 'task1', level: 1});
-            await task.save();
-            const taskId = task._id;
-
-            const test = {
-                initCode: 'initCode',
-                testCode: 'testCode',
-                language: 'java',
-                scoreFactor: 1.0,
-            };
-
-            await request
-                .post(`/tasks/${taskId}/tests`)
-                .bearer(jwtHelper.createToken('foo', 0, true))
-                .send(test)
-                .expect(201);
-
-            const actualTask = await Task.findById(taskId);
-            const actualTest = actualTask.unitTests[0];
-            assert.equal(actualTest.initCode, test.initCode);
-            assert.equal(actualTest.testCode, test.testCode);
-            assert.equal(actualTest.language, test.language);
-            assert.equal(actualTest.scoreFactor, test.scoreFactor);
         })
     });
 

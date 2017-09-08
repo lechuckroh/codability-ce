@@ -13,6 +13,10 @@ const TestRunSchema = new Schema({
     language: String,
     successCount: Number,
     failCount: Number,
+    task: {
+        type: Schema.Types.ObjectId,
+        ref: 'task'
+    },
     test: {
         type: Schema.Types.ObjectId,
         ref: 'taskUnitTest'

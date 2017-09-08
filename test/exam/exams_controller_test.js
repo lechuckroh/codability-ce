@@ -57,7 +57,6 @@ describe('exams', function () {
         it('returns an exam', async function () {
             const exam1 = new Exam({interviewee: 'Foo'});
             const exam2 = new Exam({interviewee: 'Bar'});
-            await Exam.remove({});
             await exam1.save();
             await exam2.save();
 
@@ -71,31 +70,89 @@ describe('exams', function () {
 
     describe('PUT /tasks/:examId', function () {
         it('updates an exam', async function () {
-            // TODO
+            const exam = new Exam({interviewee: 'Foo'});
+            await exam.save();
+            const params = {
+                interviewee: 'FooBar',
+                dueDate: new Date().toISOString()
+            };
+            await request
+                .put(`/exams/${exam._id}`)
+                .bearer(jwtHelper.createToken('foo', 0, true))
+                .send(params)
+                .expect(200);
+
+            const updated = await Exam.findById(exam._id);
+            assert(updated.interviewee === params.interviewee);
+            assert(updated.dueDate.toISOString() === params.dueDate);
         })
     });
 
     describe('DELETE /exams/:examId', function () {
         it('removes an exam', async function () {
-            // TODO
+            const exam1 = new Exam({interviewee: 'Foo'});
+            const exam2 = new Exam({interviewee: 'Bar'});
+            await exam1.save();
+            await exam2.save();
+
+            await request
+                .delete(`/exams/${exam2._id}`)
+                .bearer(jwtHelper.createToken('foo', 0, true))
+                .send()
+                .expect(204);
+
+            const result = await Exam.findById(exam2._id);
+            assert(result === null);
         })
     });
 
     describe('PUT /exams/:examId/archive', function () {
         it('archives an exam', async function () {
-            // TODO
+            const exam = new Exam({interviewee: 'Bar'});
+            await exam.save();
+
+            await request
+                .put(`/exams/${exam._id}/archive`)
+                .bearer(jwtHelper.createToken('foo', 0, true))
+                .send()
+                .expect(200);
+
+            const result = await Exam.findById(exam._id);
+            assert(result.archived === true);
         })
     });
 
     describe('PUT /exams/:examId/start', function () {
         it('starts an exam', async function () {
-            // TODO
+            const exam = new Exam({interviewee: 'Bar'});
+            await exam.save();
+            const now = Date.now();
+
+            await request
+                .put(`/exams/${exam._id}/start`)
+                .bearer(jwtHelper.createToken('foo', 0, true))
+                .send()
+                .expect(200);
+
+            const result = await Exam.findById(exam._id);
+            assert(result.startedAt >= now);
         })
     });
 
     describe('PUT /exams/:examId/submit', function () {
         it('submits an exam', async function () {
-            // TODO
+            const exam = new Exam({interviewee: 'Bar'});
+            await exam.save();
+            const now = Date.now();
+
+            await request
+                .put(`/exams/${exam._id}/submit`)
+                .bearer(jwtHelper.createToken('foo', 0, true))
+                .send()
+                .expect(200);
+
+            const result = await Exam.findById(exam._id);
+            assert(result.finishedAt >= now);
         })
     });
 });

@@ -1,6 +1,5 @@
 'use strict';
 
-const winston = require('winston');
 const Task = require('./task');
 const jwt = require('../jwt');
 
@@ -123,37 +122,7 @@ exports.getTaskUnitTests = async function (ctx) {
 };
 
 /**
- * 문제 테스트 추가
- */
-exports.postTaskUnitTest = async function (ctx) {
-    const {taskId} = ctx.params;
-    const body = ctx.request.body;
-
-    try {
-        const {admin} = jwt.decode(ctx.req.headers);
-        if (admin) {
-            const task = await Task.findById(taskId);
-            if (task) {
-                task.unitTests.push(body);
-                await task.save();
-                ctx.status = 201;
-            } else {
-                ctx.status = 400;
-                ctx.body = 'task not found';
-            }
-        } else {
-            ctx.status = 401;
-            ctx.body = 'admin required';
-        }
-    } catch (e) {
-        console.error(e);
-        ctx.status = 500;
-        ctx.body = e;
-    }
-};
-
-/**
- * 문제 테스트 수정
+ * 문제 테스트 업데이트
  */
 exports.updateTaskUnitTest = async function (ctx) {
     const {taskId, testId} = ctx.params;

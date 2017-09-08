@@ -52,7 +52,6 @@ const registerRoutes = function () {
 
     // TaskTest
     jwtGet('/tasks/:taskId/tests', tasksController.getTaskUnitTests);
-    jwtPost('/tasks/:taskId/tests', tasksController.postTaskUnitTest);
     jwtPut('/tasks/:taskId/tests/:testId', tasksController.updateTaskUnitTest);
     jwtDel('/tasks/:taskId/tests/:testId', tasksController.deleteTaskUnitTest);
 

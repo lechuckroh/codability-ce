@@ -93,6 +93,10 @@ function setupMongo(app, cfg) {
     app.use(mongoose(cfg));
 }
 
+function setStaticDir(app, directory) {
+    app.use(require('koa-static')(directory, {}));
+}
+
 function startServer(app) {
     const port = 3000;
     winston.info('Server started.', {port: port});
@@ -109,6 +113,7 @@ function start(config) {
     initErrorLogger(app);
     setupMongo(app, config['mongo'] || {});
     registerRoutes(app);
+    setStaticDir(app, './static');
 
     return startServer(app);
 }

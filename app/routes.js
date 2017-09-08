@@ -22,10 +22,6 @@ const jwtDel = (uri, fn) => router.delete(uri, koaJwt, fn);
 
 
 const registerRoutes = function () {
-    get('/', ctx => {
-        ctx.body = `${packageJson.name} v${packageJson.version}`;
-    });
-
     // Auth
     post('/auth/login', authController.login);
 
@@ -61,6 +57,11 @@ const registerRoutes = function () {
     jwtPost('/users', usersController.postUser);
     jwtPut('/users', usersController.putUser);
     jwtDel('/users/:userId', usersController.deleteUser);
+
+    // version
+    get('/version', ctx => {
+        ctx.body = `${packageJson.name} v${packageJson.version}`;
+    });
 };
 
 exports.router = router;

@@ -26,6 +26,7 @@
     "koa-mongoose": "^2.0.0",
     "koa-morgan": "^1.0.1",
     "koa-router": "^7.2.1",
+    "koa-static": "^4.0.1",
     "mongodb": "^2.2.28",
     "mongoose": "^4.10.7",
     "rotating-file-stream": "^1.2.2",
